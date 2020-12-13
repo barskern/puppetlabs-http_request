@@ -18,6 +18,7 @@ AllCops:
   - "**/Puppetfile"
   - "**/Vagrantfile"
   - "**/Guardfile"
+  - files/task_helper.rb
 Metrics/LineLength:
   Description: People have wide screens, use them.
   Max: 200
@@ -134,4 +135,6 @@ Style/AsciiComments:
 Style/IfUnlessModifier:
   Enabled: false
 Style/SymbolProc:
+  Enabled: false
+Style/MultilineBlockChain:
   Enabled: false

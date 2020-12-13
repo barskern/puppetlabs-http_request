@@ -1,21 +1,22 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-installdir_path = "../../ruby_task_helper/files/task_helper.rb"
-local_path = "../files/task_helper.rb"
+installdir_path = '../../ruby_task_helper/files/task_helper.rb'
+local_path = '../files/task_helper.rb'
 
 # Task is being run with bolt and helper is at location relative to task
 if File.exist?(installdir_path)
-	require_relative installdir_path
-# TODO MODULES-8605 reccomend efficient pattern for testing locally
+  require_relative installdir_path
+# TODO: MODULES-8605 reccomend efficient pattern for testing locally
 else
-	require_relative local_path
+  require_relative local_path
 end
 
 require 'json'
 require 'net/http'
 require 'openssl'
 
+# A task-class which executes HTTP requests based on provided options.
 class HTTPRequest < TaskHelper
   def task(**opts)
     # Get all of the request parameters in order...
@@ -26,7 +27,7 @@ class HTTPRequest < TaskHelper
     ssl_opts = {
       cacert: opts[:cacert],
       cert:   opts[:cert],
-      key:    opts[:key]
+      key:    opts[:key],
     }
 
     redirects = 0
@@ -42,7 +43,7 @@ class HTTPRequest < TaskHelper
       if redirects >= opts[:max_redirects]
         raise TaskHelper::Error.new(
           "Too many redirects (max: #{opts[:max_redirects]})",
-          'http_request/too-many-redirects-error'
+          'http_request/too-many-redirects-error',
         )
       end
 
@@ -53,7 +54,7 @@ class HTTPRequest < TaskHelper
     # Return the body and status code of the response.
     {
       body:        parse_response_body(response, opts[:json_endpoint]),
-      status_code: response.code.to_i
+      status_code: response.code.to_i,
     }
   rescue TaskHelper::Error => e
     { _error: e.to_h }
@@ -86,7 +87,7 @@ class HTTPRequest < TaskHelper
   rescue StandardError => e
     raise TaskHelper::Error.new(
       "Failed to connect to #{uri}: #{e.message}",
-      'http_request/connect-error'
+      'http_request/connect-error',
     )
   end
 
@@ -100,7 +101,7 @@ class HTTPRequest < TaskHelper
       rescue JSON::ParserError => e
         raise TaskHelper::Error.new(
           "Unable to parse response body as JSON: #{e.message}",
-          'http_request/json-parse-error'
+          'http_request/json-parse-error',
         )
       end
     end
@@ -125,7 +126,7 @@ class HTTPRequest < TaskHelper
     else
       raise TaskHelper::Error.new(
         'body must be a String when json_endpoint is false',
-        'http_request/body-type-error'
+        'http_request/body-type-error',
       )
     end
   end
