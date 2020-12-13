@@ -1,7 +1,16 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative '../../ruby_task_helper/files/task_helper'
+installdir_path = "../../ruby_task_helper/files/task_helper.rb"
+local_path = "../files/task_helper.rb"
+
+# Task is being run with bolt and helper is at location relative to task
+if File.exist?(installdir_path)
+	require_relative installdir_path
+# TODO MODULES-8605 reccomend efficient pattern for testing locally
+else
+	require_relative local_path
+end
 
 require 'json'
 require 'net/http'
