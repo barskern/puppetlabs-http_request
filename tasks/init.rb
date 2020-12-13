@@ -4,11 +4,12 @@
 installdir_path = '../../ruby_task_helper/files/task_helper.rb'
 local_path = '../files/task_helper.rb'
 
-# Task is being run with bolt and helper is at location relative to task
-if File.exist?(installdir_path)
+begin
+  # Task is being run with bolt and helper is at location relative to task
   require_relative installdir_path
-# TODO: MODULES-8605 reccomend efficient pattern for testing locally
-else
+rescue LoadError
+  # Task is being run locally (in a test)
+  # TODO: MODULES-8605 reccomend efficient pattern for testing locally
   require_relative local_path
 end
 
