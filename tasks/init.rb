@@ -136,7 +136,7 @@ class HTTPRequest < TaskHelper
   # overridden by a user.
   def format_headers(headers, json)
     default = json ? { 'Content-Type' => 'application/json' } : {}
-    default.merge(headers || {})
+    stringify_keys!(default.merge(headers || {}), deep: true)
   end
 
   # Parses the redirect URL and expands it relative to the
@@ -145,6 +145,25 @@ class HTTPRequest < TaskHelper
     uri = URI.parse(redirect_url)
     uri = URI.parse(base_url) + redirect_url if uri.relative?
     uri
+  end
+
+  def stringify_keys!(arg, options = {})
+    case arg
+    when Array
+      arg.map do |elem|
+        (options[:deep]) ? stringify_keys!(elem, options) : elem
+      end
+    when Hash
+      Hash[
+        *arg
+        .map { |key, value|
+           k = key.is_a?(Symbol) ? key.to_s : key
+           v = ((options[:deep]) ? stringify_keys!(value, options) : value)
+           [k, v]
+         }.reduce([]) { |r, x| r + x }]
+    else
+      arg
+    end
   end
 end
 
